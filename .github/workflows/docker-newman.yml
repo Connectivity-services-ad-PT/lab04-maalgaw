@@ -35,13 +35,21 @@ jobs:
             fit4110/iot-ingestion:lab04
       
       - name: Check container status
-        run:
+        run: |
           sleep 5
           docker logs fit4110-iot-lab04 || true
           docker ps -a
 
       - name: Wait for service health
-        run: npx wait-on http://localhost:8000/health --timeout 30000
+        run: |
+          echo "Chờ service khởi động..."
+          sleep 5
+          docker logs fit4110-iot-lab04 || true
+          npx wait-on http://localhost:8000/health --timeout 60000 || {
+            echo "Health check thất bại!"
+            docker logs fit4110-iot-lab04
+            exit 1
+          }
 
       - name: Run Newman against Docker container
         run: npm run test:local
