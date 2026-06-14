@@ -263,3 +263,12 @@ def get_reading(reading_id: str) -> Dict:
             problem_type="https://smart-campus.local/problems/not-found",
         ),
     )
+
+@app.get("/health", response_model=HealthResponse)
+@app.head("/health")  # ← Thêm dòng này
+def health() -> HealthResponse:
+    return HealthResponse(
+        status="ok",
+        service=SERVICE_NAME,
+        version=SERVICE_VERSION,
+    )
